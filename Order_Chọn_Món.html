@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff5f8">
+<title>Order Chọn Món</title>
+<style>
+:root{--pink:#e66e9e;--deep:#a83b6d;--pale:#fff0f6;--ink:#382832;--muted:#927d89;--line:#f2dce5;--green:#287653}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#fff8fa;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+header{padding:calc(17px + env(safe-area-inset-top)) 17px 17px;background:linear-gradient(130deg,#d9518c,#f4a8c5);color:white;border-radius:0 0 25px 25px}
+.brand{font-size:24px;font-weight:950;letter-spacing:-.6px}
+.subtitle{font-size:11px;margin-top:5px;opacity:.92;letter-spacing:.6px}
+nav{position:sticky;top:0;z-index:10;display:flex;gap:7px;padding:10px;background:#fff8faee;backdrop-filter:blur(15px)}
+nav button{flex:1;border:0;border-radius:13px;padding:12px 4px;background:#f8e5ed;color:var(--deep);font-size:12px;font-weight:850}
+nav button.active{background:var(--deep);color:white}
+main{max-width:1000px;margin:auto;padding:12px 12px 100px}
+.page{display:none}.page.active{display:block}
+.card{background:white;border:1px solid var(--line);border-radius:19px;padding:15px;margin-bottom:12px;box-shadow:0 4px 18px #9b42640a}
+h2{font-size:17px;margin:0 0 13px}h3{font-size:14px;margin:0 0 8px}
+.muted,.hint{font-size:12px;color:var(--muted)}
+label{display:block;font-size:12px;font-weight:750;color:var(--muted);margin-bottom:6px}
+.field{margin-bottom:13px}
+input,select,textarea{width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--pink)}
+button:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.btn{border:0;border-radius:12px;padding:12px;font-size:13px;font-weight:850;min-height:43px}
+.primary{background:linear-gradient(120deg,#d9518c,#ee8db3);color:white}
+.soft{background:#fbe7ef;color:var(--deep)}
+.neutral{background:#f3eff1;color:var(--ink)}
+.danger{background:#ffebe9;color:#a43b35}
+.full{width:100%}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1;min-width:0}
+.notice{padding:11px;border-radius:12px;background:var(--pale);color:var(--deep);font-size:12px;line-height:1.6;margin-bottom:12px}
+.menu-item{padding:13px 0;border-bottom:1px solid #f5e8ee}
+.menu-item:last-child{border-bottom:0}
+.product{display:flex;gap:12px;align-items:flex-start}
+.food-img{width:88px;height:88px;object-fit:cover;border-radius:15px;background:#fff0f6;flex-shrink:0;border:1px solid #f5e0e9}
+.product-info{flex:1;min-width:0}
+.menu-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:9px}
+.menu-name{font-size:15px;font-weight:900;overflow-wrap:anywhere}
+.price-list{display:flex;gap:7px;flex-wrap:wrap}
+.price{border:1px solid #efc9d9;border-radius:10px;background:#fff7fa;color:var(--deep);padding:10px 12px;min-width:53px;font-size:14px;font-weight:900}
+.price.selected{background:var(--pink);color:white;border-color:var(--pink)}
+.empty{text-align:center;padding:25px 10px;color:var(--muted);font-size:13px}
+.cart-row{padding:12px 0;border-bottom:1px solid #f5e8ee}
+.cart-main,.cart-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cart-name{font-weight:850;font-size:14px}.cart-detail{font-size:12px;color:var(--muted);margin-top:4px}
+.cart-bottom{margin-top:8px}.line-total{font-weight:900;color:var(--deep)}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:34px;height:34px;border:0;border-radius:10px;background:#f9e3ed;color:var(--deep);font-size:20px;font-weight:900}
+.total{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px dashed #e8bfd0;padding-top:14px;margin-top:12px;font-weight:850}
+.total strong{font-size:26px;color:var(--deep)}
+.code-display{font-size:36px;letter-spacing:2px;font-weight:950;color:var(--deep)}
+.order-card{background:white;border:1px solid var(--line);border-radius:16px;padding:13px;margin:10px 0}
+.order-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.pill{display:inline-block;padding:5px 8px;border-radius:20px;font-size:10px;font-weight:850;background:#f3edf0;color:#75616d;margin:5px 3px 0 0}
+.pill.ready,.pill.paid{background:#e0f3e8;color:#27704e}
+.pill.cooking{background:#fff0d5;color:#956414}
+.pill.unpaid{background:#ffe7e5;color:#a43b35}
+.order-detail{font-size:13px;line-height:1.8;color:#6f5c68;margin:10px 0}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{flex:1;min-width:85px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.stat{background:#fff7fa;border:1px solid var(--line);border-radius:13px;padding:10px;min-width:0}
+.stat span{font-size:11px;color:var(--muted)}.stat b{display:block;font-size:15px;margin-top:5px;overflow-wrap:anywhere}
+.preview{width:100px;height:100px;object-fit:cover;border-radius:13px;margin-top:8px;background:var(--pale)}
+.hint{line-height:1.6}
+.sticky-total{display:none}
+@media(min-width:700px){
+ main{padding:20px 18px 50px}
+ .order-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:14px;align-items:start}
+ .food-img{width:105px;height:105px}
+}
+@media(max-width:699px){
+ .sticky-total{position:fixed;z-index:8;bottom:0;left:0;right:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fffdfef5;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(14px)}
+ .sticky-total strong{display:block;font-size:21px;color:var(--deep)}
+ .sticky-total .btn{min-width:135px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">♡ ORDER CHỌN MÓN</div>
+  <div class="subtitle">CHỌN MÓN · TÍNH BILL · QUẢN LÝ ĐƠN HÀNG</div>
+</header>
+<nav>
+  <button class="active" data-page="order">＋ Đặt món</button>
+  <button data-page="queue">☷ Đơn hàng <span id="queueCount">0</span></button>
+  <button data-page="menu">⚙ Menu</button>
+</nav>
+
+<main>
+<section id="order" class="page active">
+ <div class="order-layout">
+  <div class="card">
+   <h2>♡ Thực đơn hôm nay</h2>
+   <div class="notice">Chọn mức giá bên dưới mỗi món để thêm vào giỏ hàng nhé!</div>
+   <div id="menuList"></div>
+   <div id="noMenu" class="empty">🍱<br>Chưa có món nào.<br>Vào tab Menu để thêm món.</div>
+  </div>
+  <div>
+   <div class="card">
+    <h2>✦ Thông tin đơn hàng</h2>
+    <div class="field">
+     <label>MÃ KHÁCH / SỐ THỨ TỰ</label>
+     <div class="row"><input id="code" placeholder="Ví dụ: 001"><button class="btn soft" style="flex:0 0 auto" onclick="suggestCode()">Tạo mã</button></div>
+    </div>
+    <div class="field"><label>Ghi chú cho quán</label><input id="note" placeholder="Ví dụ: không sốt, ít cay..."></div>
+   </div>
+   <div class="card">
+    <h2>🛍 Giỏ hàng <span class="muted" id="itemCount"></span></h2>
+    <div id="cart"><div class="empty">Bạn chưa chọn món nào.</div></div>
+    <div class="total"><span>TỔNG CỘNG</span><strong id="total">0đ</strong></div>
+    <button class="btn primary full" style="margin-top:15px;min-height:50px" onclick="createOrder()">✓ XÁC NHẬN ĐƠN</button>
+    <button class="btn neutral full" style="margin-top:8px" onclick="clearCart()">Xóa giỏ hàng</button>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="queue" class="page">
+ <div class="card">
+  <h2>♡ Quản lý đơn hàng</h2>
+  <div class="stats">
+   <div class="stat"><span>Tổng đơn</span><b id="statOrders">0</b></div>
+   <div class="stat"><span>Đã thu</span><b id="statPaid">0đ</b></div>
+   <div class="stat"><span>Chưa thu</span><b id="statUnpaid">0đ</b></div>
+  </div>
+  <div class="field"><input id="search" placeholder="Tìm mã khách..." oninput="renderOrders()"></div>
+  <div class="field"><select id="filter" onchange="renderOrders()">
+   <option value="all">Tất cả đơn hàng</option>
+   <option value="pending">Chờ chế biến</option>
+   <option value="cooking">Đang làm</option>
+   <option value="ready">Đã hoàn thành</option>
+   <option value="paid">Đã thanh toán</option>
+   <option value="unpaid">Chưa thanh toán</option>
+  </select></div>
+  <div id="orders"></div>
+ </div>
+ <div class="card">
+  <h3>Sao lưu đơn hàng</h3>
+  <p class="hint">Xuất danh sách đơn ra file CSV để mở bằng Excel hoặc lưu trữ.</p>
+  <button class="btn soft full" onclick="exportCSV()">⇩ Xuất file CSV</button>
+ </div>
+</section>
+
+<section id="menu" class="page">
+ <div class="card">
+  <h2>✦ Thêm món vào thực đơn</h2>
+  <div class="field"><label>Tên món</label><input id="newName" placeholder="Ví dụ: Cơm nắm"></div>
+  <div class="field"><label>Các mức giá (nghìn đồng)</label><input id="newPrices" placeholder="5,10,15,20"></div>
+  <div class="field">
+   <label>Ảnh món ăn</label>
+   <input id="newImage" type="file" accept="image/*" onchange="previewNew(event)">
+   <img id="newPreview" class="preview" alt="Xem trước ảnh" hidden>
+   <div class="hint">Chọn ảnh trong thư viện iPhone/iPad. Có thể bỏ trống nếu chưa có ảnh.</div>
+  </div>
+  <button class="btn primary full" onclick="addMenu()">＋ Thêm món mới</button>
+ </div>
+ <div class="card">
+  <h2>Chỉnh sửa thực đơn</h2>
+  <div id="editor"></div><div id="emptyEditor" class="empty">Chưa có món nào.</div>
+ </div>
+ <div class="card">
+  <h3>Thông tin lưu trữ</h3>
+  <p class="hint">Menu, ảnh và đơn hàng lưu trên trình duyệt của thiết bị này. Dữ liệu không tự đồng bộ giữa iPhone và iPad. Hãy xuất CSV thường xuyên để sao lưu đơn hàng.</p>
+  <button class="btn danger full" onclick="resetAll()">Xóa toàn bộ menu và đơn hàng</button>
+ </div>
+</section>
+</main>
+
+<div class="sticky-total" id="stickyTotal">
+ <div><span class="muted">Tổng giỏ hàng</span><strong id="stickyAmount">0đ</strong></div>
+ <button class="btn primary" onclick="goToCart()">Xem giỏ hàng ↓</button>
+</div>
+
+<script>
+const KEY="order_chon_mon_v1";
+let db={menu:[],orders:[]},cart=[],newImage="";
+function load(){
+ try{const s=localStorage.getItem(KEY);if(s){const d=JSON.parse(s);if(Array.isArray(d.menu)&&Array.isArray(d.orders))db=d;}}
+ catch(e){alert("Không đọc được dữ liệu lưu cũ.");}
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(db));}
+ catch(e){alert("Bộ nhớ trình duyệt đã đầy. Hãy dùng ảnh nhỏ hơn hoặc sao lưu và xóa dữ liệu cũ.");}
+ updateCount();
+}
+function money(k){return new Intl.NumberFormat("vi-VN").format(Math.round(k*1000))+"đ";}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function switchPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ if(id==="queue")renderOrders();if(id==="menu")renderEditor();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
+function imgHTML(m){
+ return m.image?`<img class="food-img" src="${m.image}" alt="${esc(m.name)}">`:`<div class="food-img" style="display:grid;place-items:center;font-size:30px">🍱</div>`;
+}
+function renderMenu(){
+ document.getElementById("noMenu").style.display=db.menu.length?"none":"block";
+ document.getElementById("menuList").innerHTML=db.menu.map((m,i)=>`
+ <div class="menu-item"><div class="product">${imgHTML(m)}
+ <div class="product-info"><div class="menu-top"><div class="menu-name">${esc(m.name)}</div></div>
+ <div class="price-list">${m.prices.map(p=>`<button class="price ${cart.some(x=>x.name===m.name&&x.price===p)?"selected":""}" onclick="addItem(${i},${p})">${p}K</button>`).join("")}</div>
+ </div></div></div>`).join("");
+}
+function addItem(i,p){
+ const m=db.menu[i],x=cart.find(x=>x.name===m.name&&x.price===p);
+ if(x)x.qty++;else cart.push({name:m.name,price:p,qty:1});
+ renderMenu();renderCart();
+}
+function changeQty(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);renderMenu();renderCart();}
+function clearCart(){cart=[];renderMenu();renderCart();}
+function renderCart(){
+ const box=document.getElementById("cart");
+ box.innerHTML=cart.length?cart.map((x,i)=>`
+ <div class="cart-row"><div class="cart-main"><div><div class="cart-name">${esc(x.name)} · ${x.price}K</div><div class="cart-detail">${money(x.price)} / phần</div></div>
+ <div class="qty"><button aria-label="Giảm số lượng" onclick="changeQty(${i},-1)">−</button><b>${x.qty}</b><button aria-label="Tăng số lượng" onclick="changeQty(${i},1)">＋</button></div></div>
+ <div class="cart-bottom"><span class="muted">Thành tiền</span><span class="line-total">${money(x.price*x.qty)}</span></div></div>`).join(""):'<div class="empty">Bạn chưa chọn món nào.</div>';
+ const total=cart.reduce((s,x)=>s+x.price*x.qty,0),count=cart.reduce((s,x)=>s+x.qty,0);
+ document.getElementById("itemCount").textContent=count?`· ${count} phần`:"";
+ document.getElementById("total").textContent=money(total);
+ document.getElementById("stickyAmount").textContent=money(total);
+}
+function goToCart(){
+ if(!document.getElementById("order").classList.contains("active"))switchPage("order");
+ document.getElementById("cart").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function suggestCode(){
+ let n=1,c;do{c=String(n++).padStart(3,"0");}while(db.orders.some(o=>o.code.toLowerCase()===c.toLowerCase()));
+ document.getElementById("code").value=c;
+}
+function createOrder(){
+ if(!cart.length){alert("Bạn chưa chọn món nào.");return;}
+ let code=document.getElementById("code").value.trim();
+ if(!code){suggestCode();code=document.getElementById("code").value.trim();}
+ if(db.orders.some(o=>o.code.toLowerCase()===code.toLowerCase())&&!confirm("Mã này đã có đơn. Bạn vẫn muốn dùng?"))return;
+ const order={id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),code,items:cart.map(x=>({...x})),total:cart.reduce((s,x)=>s+x.price*x.qty,0),note:document.getElementById("note").value.trim(),status:"pending",paid:false,createdAt:new Date().toISOString()};
+ db.orders.unshift(order);save();cart=[];
+ document.getElementById("code").value="";document.getElementById("note").value="";
+ renderMenu();renderCart();renderOrders();switchPage("queue");
+ alert("Đã nhận đơn "+code+" — "+money(order.total));
+}
+function renderOrders(){
+ const q=(document.getElementById("search")?.value||"").trim().toLowerCase(),f=document.getElementById("filter")?.value||"all";
+ const all=db.orders.filter(o=>(!q||o.code.toLowerCase().includes(q))&&(f==="all"||(f==="paid"?o.paid:f==="unpaid"?!o.paid:o.status===f)));
+ document.getElementById("statOrders").textContent=db.orders.length;
+ document.getElementById("statPaid").textContent=money(db.orders.filter(o=>o.paid).reduce((s,o)=>s+o.total,0));
+ document.getElementById("statUnpaid").textContent=money(db.orders.filter(o=>!o.paid).reduce((s,o)=>s+o.total,0));
+ document.getElementById("orders").innerHTML=all.length?all.map(o=>{
+ const labels={pending:"Chờ chế biến",cooking:"Đang làm",ready:"Hoàn thành"};
+ const time=new Date(o.createdAt).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
+ return `<div class="order-card"><div class="order-head"><div><div class="code-display">${esc(o.code)}</div><div class="muted">Nhận lúc ${time}</div><span class="pill ${o.status}">${labels[o.status]||labels.pending}</span><span class="pill ${o.paid?"paid":"unpaid"}">${o.paid?"Đã thanh toán":"Chưa thanh toán"}</span></div><b style="color:var(--deep);font-size:18px">${money(o.total)}</b></div>
+ <div class="order-detail">${o.items.map(x=>`${esc(x.name)} × ${x.qty} (${money(x.price*x.qty)})`).join("<br>")}${o.note?"<br><b>Ghi chú:</b> "+esc(o.note):""}</div>
+ <div class="actions"><button class="btn soft" onclick="cycleStatus('${o.id}')">${o.status==="pending"?"▶ Bắt đầu":o.status==="cooking"?"✓ Hoàn thành":"↺ Làm lại"}</button><button class="btn ${o.paid?"neutral":"primary"}" onclick="togglePaid('${o.id}')">${o.paid?"Đã thu ✓":"Thu tiền mặt"}</button><button class="btn danger" onclick="deleteOrder('${o.id}')">Xóa</button></div></div>`;
+ }).join(""):'<div class="empty">Không có đơn phù hợp.</div>';
+}
+function cycleStatus(id){const o=db.orders.find(o=>o.id===id);if(!o)return;o.status=o.status==="pending"?"cooking":o.status==="cooking"?"ready":"pending";save();renderOrders();}
+function togglePaid(id){const o=db.orders.find(o=>o.id===id);if(o){o.paid=!o.paid;save();renderOrders();}}
+function deleteOrder(id){if(confirm("Xóa đơn hàng này?")){db.orders=db.orders.filter(o=>o.id!==id);save();renderOrders();}}
+function compressImage(file,done){
+ if(!file)return done("");
+ if(!file.type.startsWith("image/")){alert("Vui lòng chọn tệp hình ảnh.");return;}
+ const reader=new FileReader();
+ reader.onload=e=>{
+ const im=new Image();
+ im.onload=()=>{
+ const max=420,scale=Math.min(1,max/Math.max(im.width,im.height));
+ const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));
+ c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+ done(c.toDataURL("image/jpeg",.68));
+ };
+ im.onerror=()=>alert("Không đọc được ảnh.");im.src=e.target.result;
+ };
+ reader.onerror=()=>alert("Không thể đọc ảnh.");reader.readAsDataURL(file);
+}
+function previewNew(e){
+ compressImage(e.target.files[0],data=>{newImage=data;const p=document.getElementById("newPreview");p.src=data;p.hidden=!data;});
+}
+function addMenu(){
+ const name=document.getElementById("newName").value.trim();
+ const prices=document.getElementById("newPrices").value.split(",").map(s=>Number(s.trim())).filter(n=>Number.isFinite(n)&&n>0);
+ if(!name||!prices.length){alert("Nhập tên món và giá, ví dụ Cơm nắm / 5,10,15.");return;}
+ if(db.menu.some(m=>m.name.toLowerCase()===name.toLowerCase())){alert("Tên món đã có trong menu.");return;}
+ db.menu.push({name,prices:[...new Set(prices)].sort((a,b)=>a-b),image:newImage});save();
+ document.getElementById("newName").value="";document.getElementById("newPrices").value="";
+ document.getElementById("newImage").value="";document.getElementById("newPreview").hidden=true;newImage="";
+ renderMenu();renderEditor();alert("Đã thêm món vào menu.");
+}
+function renderEditor(){
+ document.getElementById("emptyEditor").style.display=db.menu.length?"none":"block";
+ document.getElementById("editor").innerHTML=db.menu.map((m,i)=>`
+ <div class="menu-item">
+ <div class="field"><label>Tên món</label><input id="name${i}" value="${esc(m.name)}"></div>
+ <div class="field"><label>Giá (nghìn đồng, cách nhau bằng dấu phẩy)</label><input id="prices${i}" value="${m.prices.join(",")}"></div>
+ <div class="field"><label>Đổi ảnh món</label><input type="file" id="file${i}" accept="image/*" onchange="previewEdit(event,${i})"><img class="preview" id="prev${i}" src="${m.image||""}" alt="Xem trước" ${m.image?"":"hidden"}></div>
+ <button class="btn soft full" onclick="updateMenu(${i})">Lưu thay đổi</button>
+ <button class="btn danger full" style="margin-top:7px" onclick="removeMenu(${i})">Xóa món</button>
+ </div>`).join("");
+}
+function previewEdit(e,i){
+ compressImage(e.target.files[0],data=>{const p=document.getElementById("prev"+i);p.src=data;p.hidden=!data;p.dataset.newImage=data;});
+}
+function updateMenu(i){
+ const name=document.getElementById("name"+i).value.trim();
+ const prices=document.getElementById("prices"+i).value.split(",").map(s=>Number(s.trim())).filter(n=>Number.isFinite(n)&&n>0);
+ if(!name||!prices.length){alert("Tên món và ít nhất một mức giá là bắt buộc.");return;}
+ if(db.menu.some((m,j)=>j!==i&&m.name.toLowerCase()===name.toLowerCase())){alert("Tên món đã được sử dụng.");return;}
+ const p=document.getElementById("prev"+i),image=p.dataset.newImage!==undefined?p.dataset.newImage:(db.menu[i].image||"");
+ db.menu[i]={...db.menu[i],name,prices:[...new Set(prices)].sort((a,b)=>a-b),image};
+ save();renderMenu();renderEditor();alert("Đã lưu menu.");
+}
+function removeMenu(i){if(confirm("Xóa món khỏi menu? Đơn hàng cũ vẫn được giữ.")){db.menu.splice(i,1);save();renderMenu();renderEditor();}}
+function updateCount(){document.getElementById("queueCount").textContent=db.orders.filter(o=>!o.paid||o.status!=="ready").length;}
+function exportCSV(){
+ if(!db.orders.length){alert("Chưa có đơn để xuất.");return;}
+ const rows=[["Ma khach","Thoi gian","Mon","Tong tien VND","Trang thai","Thanh toan","Ghi chu"]];
+ db.orders.forEach(o=>rows.push([o.code,new Date(o.createdAt).toLocaleString("vi-VN"),o.items.map(x=>`${x.name} x${x.qty}`).join("; "),o.total*1000,o.status,o.paid?"Da thanh toan":"Chua thanh toan",o.note||""]));
+ const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})),a=document.createElement("a");
+ a.href=url;a.download="order-chon-mon.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function resetAll(){
+ if(confirm("Xóa toàn bộ menu và đơn hàng? Không thể hoàn tác.")){
+ db={menu:[],orders:[]};cart=[];newImage="";save();renderMenu();renderCart();renderOrders();renderEditor();
+ }
+}
+load();renderMenu();renderCart();renderOrders();renderEditor();updateCount();
+</script>
+</body>
+</html>
